@@ -6,31 +6,31 @@ package model // import "miniflux.app/model"
 
 import "fmt"
 
-// Category represents a feed category.
-type Category struct {
+// Tag represents a feed Tag.
+type Tag struct {
 	ID           int64  `json:"id"`
 	Title        string `json:"title"`
 	UserID       int64  `json:"user_id"`
 	HideGlobally bool   `json:"hide_globally"`
 	FeedCount    int    `json:"-"`
-	TotalUnread  int    `json:"-"`
+	TotalUnread  int    `json:"-"` // TODO how does this apply to tags
 }
 
-func (c *Category) String() string {
+func (c *Tag) String() string {
 	return fmt.Sprintf("ID=%d, UserID=%d, Title=%s", c.ID, c.UserID, c.Title)
 }
 
-// CategoryRequest represents the request to create or update a category.
-type CategoryRequest struct {
+// TagRequest represents the request to create or update a Tag.
+type TagRequest struct {
 	Title        string `json:"title"`
 	HideGlobally string `json:"hide_globally"`
 }
 
-// Patch updates category fields.
-func (cr *CategoryRequest) Patch(category *Category) {
-	category.Title = cr.Title
-	category.HideGlobally = cr.HideGlobally != ""
+// Patch updates Tag fields.
+func (cr *TagRequest) Patch(tag *Tag) {
+	tag.Title = cr.Title
+	tag.HideGlobally = cr.HideGlobally != ""
 }
 
 // Categories represents a list of categories.
-type Categories []*Category
+type Tags []*Tag

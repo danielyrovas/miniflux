@@ -50,7 +50,7 @@ type Feed struct {
 	IgnoreHTTPCache             bool      `json:"ignore_http_cache"`
 	AllowSelfSignedCertificates bool      `json:"allow_self_signed_certificates"`
 	FetchViaProxy               bool      `json:"fetch_via_proxy"`
-	Category                    *Category `json:"category,omitempty"`
+	Tags                        []Tag     `json:"tags,omitempty"`
 	Entries                     Entries   `json:"entries,omitempty"`
 	IconURL                     string    `json:"icon_url"`
 	Icon                        *FeedIcon `json:"icon"`
@@ -65,13 +65,13 @@ type FeedCounters struct {
 }
 
 func (f *Feed) String() string {
-	return fmt.Sprintf("ID=%d, UserID=%d, FeedURL=%s, SiteURL=%s, Title=%s, Category={%s}",
+	return fmt.Sprintf("ID=%d, UserID=%d, FeedURL=%s, SiteURL=%s, Title=%s, Tags={%s}",
 		f.ID,
 		f.UserID,
 		f.FeedURL,
 		f.SiteURL,
 		f.Title,
-		f.Category,
+		f.Tags,
 	)
 }
 

@@ -40,6 +40,25 @@ type Entry struct {
 	Tags        []string      `json:"tags"`
 }
 
+/*
+  - id #
+  - id of associated user #
+  - id of feed/source (rss, atom, manual) # (1 means manually bookmarked?/the bookmark feed)
+  - saved date, updated date, published date #
+  - title #NO, web_title # (ie manual title vs original/rss)
+  - description #NO, web_description #
+  - url #
+  - share hash (url available for sharing) #
+  - reading time #
+  - author (rss author or web author if found) #
+  - flags: read, archived, favourite (and their inverse)
+  - list of custom tags — user defined
+  - a custom note
+  - article/page content
+
+  - image/icon
+*/
+
 // Entries represents a list of entries.
 type Entries []*Entry
 
