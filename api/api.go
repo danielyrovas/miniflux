@@ -65,4 +65,16 @@ func Serve(router *mux.Router, store *storage.Storage, pool *worker.Pool) {
 	sr.HandleFunc("/entries/{entryID}", handler.getEntry).Methods(http.MethodGet)
 	sr.HandleFunc("/entries/{entryID}/bookmark", handler.toggleBookmark).Methods(http.MethodPut)
 	sr.HandleFunc("/entries/{entryID}/fetch-content", handler.fetchContent).Methods(http.MethodGet)
+
+	sr.HandleFunc("/tags", handler.createTag).Methods(http.MethodPost)
+	sr.HandleFunc("/tags", handler.getTags).Methods(http.MethodGet)
+	sr.HandleFunc("/tags/{tagID}", handler.updateTag).Methods(http.MethodPut)
+	sr.HandleFunc("/tags/{tagID}", handler.removeTag).Methods(http.MethodDelete)
+	/*
+	   sr.HandleFunc("/tags/{tagID}/mark-all-as-read", handler.markCategoryAsRead).Methods(http.MethodPut)
+	   sr.HandleFunc("/tags/{tagID}/feeds", handler.getCategoryFeeds).Methods(http.MethodGet)
+	   sr.HandleFunc("/tags/{tagID}/refresh", handler.refreshCategory).Methods(http.MethodPut)
+	   sr.HandleFunc("/tags/{tagID}/entries", handler.getCategoryEntries).Methods(http.MethodGet)
+	   sr.HandleFunc("/tags/{tagID}/entries/{entryID}", handler.getCategoryEntry).Methods(http.MethodGet)
+	*/
 }
