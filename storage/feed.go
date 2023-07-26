@@ -172,6 +172,15 @@ func (s *Storage) FeedsByCategoryWithCounters(userID, categoryID int64) (model.F
 	return getFeedsSorted(builder)
 }
 
+// FeedsByTagWithCounters returns all feeds of the given user/tag with counters of read and unread entries.
+func (s *Storage) FeedsByTagWithCounters(userID, tagID int64) (model.Feeds, error) {
+	builder := NewFeedQueryBuilder(s, userID)
+	builder.WithTagID(tagID)
+	builder.WithCounters()
+	builder.WithSorting(model.DefaultFeedSorting, model.DefaultFeedSortingDirection)
+	return getFeedsSorted(builder)
+}
+
 // WeeklyFeedEntryCount returns the weekly entry count for a feed.
 func (s *Storage) WeeklyFeedEntryCount(userID, feedID int64) (int, error) {
 	query := `

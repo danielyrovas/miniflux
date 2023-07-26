@@ -49,6 +49,18 @@ func (f *FeedQueryBuilder) WithCategoryID(categoryID int64) *FeedQueryBuilder {
 	return f
 }
 
+// WithTagID filter by tag ID.
+func (f *FeedQueryBuilder) WithTagID(tagID int64) *FeedQueryBuilder {
+	if tagID > 0 {
+		f.conditions = append(f.conditions, fmt.Sprintf("f.tag_id = $%d", len(f.args)+1))
+		f.args = append(f.args, tagID)
+		f.counterConditions = append(f.counterConditions, fmt.Sprintf("f.tag_id = $%d", len(f.counterArgs)+1))
+		f.counterArgs = append(f.counterArgs, tagID)
+		f.counterJoinFeeds = true
+	}
+	return f
+}
+
 // WithFeedID filter by feed ID.
 func (f *FeedQueryBuilder) WithFeedID(feedID int64) *FeedQueryBuilder {
 	if feedID > 0 {
@@ -129,7 +141,7 @@ func (f *FeedQueryBuilder) GetFeed() (*model.Feed, error) {
 
 // GetFeeds returns a list of feeds that match the condition.
 func (f *FeedQueryBuilder) GetFeeds() (model.Feeds, error) {
-	var query = `
+	query := `
 		SELECT
 			f.id,
 			f.feed_url,
@@ -227,7 +239,6 @@ func (f *FeedQueryBuilder) GetFeeds() (model.Feeds, error) {
 			&iconID,
 			&tz,
 		)
-
 		if err != nil {
 			return nil, fmt.Errorf(`store: unable to fetch feeds row: %w`, err)
 		}

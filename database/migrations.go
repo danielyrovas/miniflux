@@ -716,6 +716,7 @@ var migrations = []func(tx *sql.Tx) error{
 		_, err = tx.Exec(sql)
 		return err
 	},
+
 	func(tx *sql.Tx) (err error) {
 		sql := `
 			CREATE TABLE tags (
@@ -730,10 +731,32 @@ var migrations = []func(tx *sql.Tx) error{
 			CREATE TABLE entry_tags (
 				id bigserial not null,
 				entry_id bigint not null,
-				tag_id int not null,
+				tag_id bigint not null,
 				primary key (id),
 				unique (entry_id, tag_id),
 				foreign key (entry_id) references entries(id) on delete cascade,
+				foreign key (tag_id) references tags(id) on delete cascade
+			);
+		`
+		_, err = tx.Exec(sql)
+		return err
+	},
+
+	func(tx *sql.Tx) (err error) {
+		sql := `ALTER TABLE entry_tags ALTER COLUMN tag_id SET DATA TYPE bigint`
+		_, err = tx.Exec(sql)
+		return err
+	},
+
+	func(tx *sql.Tx) (err error) {
+		sql := `
+			CREATE TABLE feed_tags (
+				id bigserial not null,
+				feed_id bigint not null,
+				tag_id bigint not null,
+				primary key (id),
+				unique (feed_id, tag_id),
+				foreign key (entry_id) references feeds(id) on delete cascade,
 				foreign key (tag_id) references tags(id) on delete cascade
 			);
 		`

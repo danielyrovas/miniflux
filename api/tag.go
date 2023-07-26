@@ -7,6 +7,7 @@ import (
 	json_parser "encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"miniflux.app/http/request"
 	"miniflux.app/http/response/json"
@@ -109,7 +110,31 @@ func (h *handler) removeTag(w http.ResponseWriter, r *http.Request) {
 	json.NoContent(w, r)
 }
 
-/*
+// get all feeds that are associated with a tag
+func (h *handler) getTagFeeds(w http.ResponseWriter, r *http.Request) {
+	userID := request.UserID(r)
+	tagID := request.RouteInt64Param(r, "tagID")
+
+	tag, err := h.store.Tag(userID, tagID)
+	if err != nil {
+		json.ServerError(w, r, err)
+		return
+	}
+
+	if tag == nil {
+		json.NotFound(w, r)
+		return
+	}
+
+	feeds, err := h.store.FeedsByTagWithCounters(userID, tagID)
+	if err != nil {
+		json.ServerError(w, r, err)
+		return
+	}
+
+	json.OK(w, r, feeds)
+}
+
 func (h *handler) markTagAsRead(w http.ResponseWriter, r *http.Request) {
 	userID := request.UserID(r)
 	tagID := request.RouteInt64Param(r, "tagID")
@@ -133,6 +158,7 @@ func (h *handler) markTagAsRead(w http.ResponseWriter, r *http.Request) {
 	json.NoContent(w, r)
 }
 
+/*
 func (h *handler) getTags(w http.ResponseWriter, r *http.Request) {
 	var tags model.Tags
 	var err error
