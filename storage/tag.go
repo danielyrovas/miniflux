@@ -158,6 +158,15 @@ func (s *Storage) TagByTitle(userID int64, title string) (*model.Tag, error) {
 	}
 }
 
+// FeedsByTagWithCounters returns all feeds of the given user/tag with counters of read and unread entries.
+func (s *Storage) FeedsByTagWithCounters(userID, tagID int64) (model.Feeds, error) {
+	builder := NewFeedQueryBuilder(s, userID)
+	builder.WithTagID(tagID)
+	builder.WithCounters()
+	builder.WithSorting(model.DefaultFeedSorting, model.DefaultFeedSortingDirection)
+	return getFeedsSorted(builder)
+}
+
 /*
 // FirstTag returns the first tag for the given user.
 func (s *Storage) FirstTag(userID int64) (*model.Tag, error) {

@@ -8,6 +8,9 @@ import (
 	"time"
 )
 
+// TODO: handle the following entry statusus
+// read/unread, archived/active, removed (ie deleted - pending cleanup)
+
 // Entry statuses.
 const (
 	EntryStatusUnread  = "unread"

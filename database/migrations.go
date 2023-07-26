@@ -756,7 +756,7 @@ var migrations = []func(tx *sql.Tx) error{
 				tag_id bigint not null,
 				primary key (id),
 				unique (feed_id, tag_id),
-				foreign key (entry_id) references feeds(id) on delete cascade,
+				foreign key (feed_id) references feeds(id) on delete cascade,
 				foreign key (tag_id) references tags(id) on delete cascade
 			);
 		`

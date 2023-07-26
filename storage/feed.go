@@ -49,7 +49,7 @@ func (s *Storage) FeedURLExists(userID int64, feedURL string) bool {
 	return result
 }
 
-// AnotherFeedURLExists checks if the user a duplicated feed.
+// AnotherFeedURLExists checks if the user tries to add a duplicate feed.
 func (s *Storage) AnotherFeedURLExists(userID, feedID int64, feedURL string) bool {
 	var result bool
 	query := `SELECT true FROM feeds WHERE id <> $1 AND user_id=$2 AND feed_url=$3`

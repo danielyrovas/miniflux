@@ -154,7 +154,6 @@ func (s *Storage) createEntry(tx *sql.Tx, entry *model.Entry) error {
 		entry.ReadingTime,
 		pq.Array(removeDuplicates(entry.Tags)),
 	).Scan(&entry.ID, &entry.Status)
-
 	if err != nil {
 		return fmt.Errorf(`store: unable to create entry %q (feed #%d): %v`, entry.URL, entry.FeedID, err)
 	}
@@ -205,7 +204,6 @@ func (s *Storage) updateEntry(tx *sql.Tx, entry *model.Entry) error {
 		entry.Hash,
 		pq.Array(removeDuplicates(entry.Tags)),
 	).Scan(&entry.ID)
-
 	if err != nil {
 		return fmt.Errorf(`store: unable to update entry %q: %v`, entry.URL, err)
 	}
@@ -533,6 +531,34 @@ func (s *Storage) MarkCategoryAsRead(userID, categoryID int64, before time.Time)
 
 	count, _ := result.RowsAffected()
 	logger.Debug("[Storage:MarkCategoryAsRead] %d items marked as read", count)
+
+	return nil
+}
+
+// MarkTagAsRead updates all tag entries to the read status.
+func (s *Storage) MarkTagAsRead(userID, tagID int64, before time.Time) error {
+	query := `
+		UPDATE
+			entries
+		SET
+			status=$1,
+			changed_at=now()
+		WHERE
+			user_id=$2
+		AND
+			status=$3
+		AND
+			published_at < $4
+		AND
+			feed_id IN (SELECT id FROM feeds WHERE user_id=$2 AND tag_id=$5)
+	`
+	result, err := s.db.Exec(query, model.EntryStatusRead, userID, model.EntryStatusUnread, before, tagID)
+	if err != nil {
+		return fmt.Errorf(`store: unable to mark tag entries as read: %v`, err)
+	}
+
+	count, _ := result.RowsAffected()
+	logger.Debug("[Storage:MarkTagAsRead] %d items marked as read", count)
 
 	return nil
 }
